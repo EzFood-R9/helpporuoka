@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "977946606014",
+    "project_id": "ezfood-bea11",
+    "storage_bucket": "ezfood-bea11.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977946606014:android:3f309506eb14492128a1ef",
+        "android_client_info": {
+          "package_name": "com.example.ezfood"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "977946606014-c2p4ka0kmjrogj7vvmq0pjv99oodocoo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ezfood",
+            "certificate_hash": "f7f5d437c6efe22e4b5c4db0b6298f1385705834"
+          }
+        },
+        {
+          "client_id": "977946606014-v2bsq7qe8ga4vvjgg53f1llsin2e901l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmQ9feBXcOPfOWuiHwKMsF_tY0FuiHhs4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "977946606014-ko50tl8hq53cdkfo16q02h92kgo2ae2b.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "977946606014-0ukkhmh10jmic38eem3mcr0sm1cj14n7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.ezfood"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
