@@ -23,15 +23,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -50,19 +44,41 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAhY4Ufcs-X5IcywiChr7JXNIpmSOtlIbY',
-    appId: '1:977946606014:web:2789ccafee6ffc8e28a1ef',
-    messagingSenderId: '977946606014',
-    projectId: 'ezfood-bea11',
-    authDomain: 'ezfood-bea11.firebaseapp.com',
-    storageBucket: 'ezfood-bea11.appspot.com',
+    apiKey: 'AIzaSyCOqdCh1o2UtuzrjCm83sHFObvUVKog5Qo',
+    appId: '1:982526738318:web:77083707bb8367125faedf',
+    messagingSenderId: '982526738318',
+    projectId: 'ezfootesti',
+    authDomain: 'ezfootesti.firebaseapp.com',
+    storageBucket: 'ezfootesti.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDmQ9feBXcOPfOWuiHwKMsF_tY0FuiHhs4',
-    appId: '1:977946606014:android:3f309506eb14492128a1ef',
-    messagingSenderId: '977946606014',
-    projectId: 'ezfood-bea11',
-    storageBucket: 'ezfood-bea11.appspot.com',
+    apiKey: 'AIzaSyDNi_4SXNIYAn5Vr8tr2rM-ucDwqtM54Mk',
+    appId: '1:982526738318:android:f4b758e232b4e23c5faedf',
+    messagingSenderId: '982526738318',
+    projectId: 'ezfootesti',
+    storageBucket: 'ezfootesti.appspot.com',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyDuKTBJp_GET9txUcHxaqsHkZ3992y1pqs',
+    appId: '1:982526738318:ios:b622df1d1500c7285faedf',
+    messagingSenderId: '982526738318',
+    projectId: 'ezfootesti',
+    storageBucket: 'ezfootesti.appspot.com',
+    iosClientId:
+        '982526738318-drarglh2no53q225100m2bffqs87b1hu.apps.googleusercontent.com',
+    iosBundleId: 'com.example.ezfood',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyDuKTBJp_GET9txUcHxaqsHkZ3992y1pqs',
+    appId: '1:982526738318:ios:b622df1d1500c7285faedf',
+    messagingSenderId: '982526738318',
+    projectId: 'ezfootesti',
+    storageBucket: 'ezfootesti.appspot.com',
+    iosClientId:
+        '982526738318-drarglh2no53q225100m2bffqs87b1hu.apps.googleusercontent.com',
+    iosBundleId: 'com.example.ezfood',
   );
 }

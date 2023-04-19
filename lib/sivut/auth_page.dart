@@ -1,4 +1,5 @@
-import 'package:ezfood/sivut/home_page.dart';
+import 'package:ezfood/main.dart';
+import 'package:ezfood/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'login_or_register_page.dart';
@@ -13,7 +14,7 @@ class AuthPage extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return HomePage();
+            return const RootPage();
           } else {
             return const LoginOrRegisterPage();
           }

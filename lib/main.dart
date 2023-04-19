@@ -1,37 +1,146 @@
-// ignore_for_file: prefer_const_constructors
-
-import 'package:ezfood/sivut/home_page.dart';
-import 'package:ezfood/sivut/login_page.dart';
+import 'package:ezfood/favourites.dart';
 import 'package:flutter/material.dart';
-import 'package:ezfood/sivut/favourites.dart';
-import 'package:ezfood/sivut/settings.dart';
-import 'package:easy_search_bar/easy_search_bar.dart';
+import 'addnew.dart';
+import 'home.dart';
+import 'settings.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart'; // new
+import 'package:go_router/go_router.dart'; // new
+import 'package:provider/provider.dart'; // new
+import 'app_state.dart';
 import 'firebase_options.dart';
 import 'package:ezfood/sivut/auth_page.dart';
+import 'package:firebase_auth/firebase_auth.dart' // new
+    hide
+        EmailAuthProvider,
+        PhoneAuthProvider; // new
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MyApp());
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  runApp(ChangeNotifierProvider(
+    create: (context) => ApplicationState(),
+    builder: ((context, page) => const App()),
+  ));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+final _router = GoRouter(
+  routes: [
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const AuthPage(),
+      routes: [
+        GoRoute(
+          path: 'sign-in',
+          builder: (context, state) {
+            return SignInScreen(
+              actions: [
+                ForgotPasswordAction(((context, email) {
+                  final uri = Uri(
+                    path: '/sign-in/forgot-password',
+                    queryParameters: <String, String?>{
+                      'email': email,
+                    },
+                  );
+                  context.push(uri.toString());
+                })),
+                AuthStateChangeAction(((context, state) {
+                  if (state is SignedIn || state is UserCreated) {
+                    var user = (state is SignedIn)
+                        ? state.user
+                        : (state as UserCreated).credential.user;
+                    if (user == null) {
+                      return;
+                    }
+                    if (state is UserCreated) {
+                      user.updateDisplayName(user.email!.split('@')[0]);
+                    }
+                    if (!user.emailVerified) {
+                      user.sendEmailVerification();
+                      const snackBar = SnackBar(
+                          content: Text(
+                              'Please check your email to verify your email address'));
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }
+                    context.pushReplacement('/');
+                  }
+                })),
+              ],
+            );
+          },
+          routes: [
+            GoRoute(
+              path: 'forgot-password',
+              builder: (context, state) {
+                final arguments = state.queryParams;
+                return ForgotPasswordScreen(
+                  email: arguments['email'],
+                  headerMaxExtent: 200,
+                );
+              },
+            ),
+          ],
+        ),
+        GoRoute(
+          path: 'profile',
+          builder: (context, state) {
+            return ProfileScreen(
+              providers: const [],
+              actions: [
+                SignedOutAction((context) {
+                  context.pushReplacement('/');
+                }),
+              ],
+            );
+          },
+        ),
+      ],
+    ),
+  ],
+);
+// end of GoRouter configuration
+
+// Change MaterialApp to MaterialApp.router and add the routerConfig
+class App extends StatelessWidget {
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      theme: ThemeData(primarySwatch: Colors.amber),
       debugShowCheckedModeBanner: false,
-      home: AuthPage(),
+      routerConfig: _router, // new
     );
   }
 }
 
 class RootPage extends StatefulWidget {
-  const RootPage({super.key});
+  const RootPage({Key? key}) : super(key: key);
 
   @override
+  Widget build(BuildContext context) {
+    final auth = FirebaseAuth.instance;
+    return StreamBuilder<User?>(
+      stream: auth.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        final user = snapshot.data;
+        if (user == null) {
+          return const SignInScreen();
+        }
+        return const App();
+      },
+    );
+  }
+
   State<RootPage> createState() => _RootPageState();
 }
 
@@ -58,12 +167,10 @@ class _RootPageState extends State<RootPage> {
     'helppo ruoka alle 1 euro'
   ];
   List<Widget> pages = [
-    Favourites(),
-    HomePage(),
-    settings(),
-    LoginPage(
-      onTap: () {},
-    )
+    const Addnew(),
+    Home(),
+    const Favourites(),
+    const settings(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -71,10 +178,8 @@ class _RootPageState extends State<RootPage> {
         debugShowCheckedModeBanner: false,
         theme: _iconbool ? _darkTheme : _lightTheme,
         home: Scaffold(
-          appBar: EasySearchBar(
-            onSearch: (value) => setState(() => searchValue = value),
-            suggestions: _suggestions,
-            title: const Text(''),
+          appBar: AppBar(
+            title: const Text('ezfood'),
             actions: [
               IconButton(
                   onPressed: () {
@@ -94,20 +199,15 @@ class _RootPageState extends State<RootPage> {
             ),
             child: pages[currentPage],
           ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              debugPrint('Floating Action button');
-            },
-            child: const Icon(Icons.add),
-          ),
           bottomNavigationBar: NavigationBar(
             destinations: const [
+              NavigationDestination(icon: Icon(Icons.add), label: 'Add recipe'),
               NavigationDestination(
-                  icon: Icon(Icons.favorite), label: 'Favourites'),
-              NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+                  icon: Icon(Icons.soup_kitchen), label: 'Recipes'),
+              NavigationDestination(
+                  icon: Icon(Icons.favorite_sharp), label: 'Favourites'),
               NavigationDestination(
                   icon: Icon(Icons.settings), label: 'Settings'),
-              NavigationDestination(icon: Icon(Icons.lock), label: 'Login'),
             ],
             onDestinationSelected: (int index) {
               setState(() {
